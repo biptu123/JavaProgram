@@ -1,0 +1,161 @@
+import java.util.*;
+import java.io.*;
+
+public class matrix {
+	
+//method for making inverse matrix 
+
+   public static void inverse(int a[][],int d)
+   {
+   	float inverse[][]=new float[d][d];
+   	float adj[][]=new float[d][d];
+   	int det = det(a,d,0,0);
+   	int x, y;
+   	if(det==0)
+   	{
+   		System.out.println("The matrix M has no inverse since its determinant det(M)=0");
+   		return;
+   	}
+   	for(x=0;x<d;x++)
+   	     for(y=0;y<d;y++)
+   	         adj[x][y]=(float)adj(a,d,x,y);
+   	
+    
+   	for(x=0;x<d;x++)
+   	    for(y=0;y<d;y++)
+   	         inverse[x][y]=(adj[x][y]/det);
+    
+	System.out.println("Inverse of the matrix is: ");	   
+   	for(x=0;x<d;x++)
+   	{
+   	     for(y=0;y<d;y++)
+   	    	 if(inverse[x][y]==(int)inverse[x][y])
+   	    		 System.out.print((int)inverse[x][y]+" ");
+   	    	 else
+   	    		 System.out.print((int)adj[y][x]+"/"+det+" ");
+   	     System.out.println();
+    } 
+   	System.out.println("\nIn decimal");
+   	for(x=0;x<d;x++)
+    {
+    	 for(y=0;y<d;y++)
+    	    if(inverse[x][y]==(int)inverse[x][y])
+    	    	 System.out.print((int)inverse[x][y]+" ");
+    	    else
+    	    	 System.out.print(inverse[x][y]+" ");
+    	    System.out.println();
+    }
+   }
+
+		
+//method for making adjoint matrix
+
+    public static int adj(int a[][], int d,int i1,int j1)
+    {
+        int[][] adj1=new int[d][d];
+        int[][] adj=new int[d][d];
+        for(int i=0;i<d;i++)
+             for(int j=0;j<d;j++)
+                   if((i+j)%2==0)
+                        adj1[i][j]=minor(a,d,i,j);
+                    else
+                        adj1[i][j]=-minor(a,d,i,j);
+         for(int x=0;x<d;x++)
+         {
+              for(int y=0;y<d;y++)
+                  adj[x][y]=adj1[y][x];
+         }
+      return adj[i1][j1];
+    	
+    }
+    
+	
+//method to calculate the minor matrix of an element a[i][j]
+	public static int minor(int a[][],int d,int i,int j)
+	{
+	    int x,y;
+		int A[][]= new int[d][d];
+		for ( x=0;x<d;x++)
+			for( y=0;y<d;y++)
+			{
+				if(x<i&&y<j)
+				   A[x][y]=a[x][y];
+				else if(x>i&&y>j)
+					A[x-1][y-1]=a[x][y];
+				else if(x>i)
+				    A[x-1][y]=a[x][y];
+				 else if(y>j)
+				    A[x][y-1]=a[x][y];
+			}
+
+	 return det(A,d-1,0,0);
+	}
+	
+	
+	
+//method to calculate the determinant of an matrix a[d][d] with first element a[i][j]
+	public static int det(int a[][],int d, int i,int j)
+	{
+		int det;
+		if(d==1)
+		    return a[0][0];
+		if(d==2)
+		{
+			 det=(a[0][0]*a[1][1])-a[0][1]*a[1][0];
+			 return det;
+		}	
+		else
+		{
+		    int d1=0,d2=0;
+			int m=0;
+				for(int n=0;n<d;n++)
+				{
+					if((m+n)%2==0)
+						d1=d1+(a[m][n]*minor(a,d,m,n));
+					else
+					    d2=d2+(a[m][n]*minor(a,d,m,n));
+				}
+			det=d1-d2;
+		return det;
+		}
+	}
+	
+
+	
+//main() method 	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Scanner in=new Scanner(System.in);
+		
+		try
+		{
+			System.out.print("Enter the order of the matrix: ");
+			int d;
+			d=in.nextInt();
+			int[][] M=new int[d][d];
+			
+			System.out.println("Enter the matrix element:");
+			for(int i=0;i<d;i++)
+			    for(int j=0;j<d;j++)
+			        M[i][j]=in.nextInt();
+			        
+			 
+			if(d==1)
+			{
+				System.out.println("The matrix should have atleast 2 row and column");
+			}
+			else
+				inverse(M,d);
+		
+		}
+		catch(Exception e)
+		{
+			 System.out.println("The matrix M has no inverse as it determinant det(M)=0");
+		}
+
+	
+		
+	}
+}
