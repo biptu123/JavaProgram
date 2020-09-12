@@ -1,0 +1,172 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferStrategy;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFrame;
+
+
+public class Window extends JFrame implements KeyListener{
+	int i=0,j=0;
+	boolean Run=true;
+	static boolean start=false;
+	boolean stop=true;
+	Color[] color;
+	 
+	int[] values;
+	int size=40;
+	Random random;
+
+	static BufferStrategy bs;
+
+	public Window() {
+		this.random=new Random();
+		this.setSize(400, 600);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setResizable(false);
+		this.addKeyListener(this);
+		
+		this.values=new int[getWidth()/size];
+		
+		this.color=new Color[getWidth()/size];
+		for(int i=0;i<values.length;i++)
+			this.values[i]=random.nextInt(getHeight()-100)+50;
+
+		for(int i=0;i<color.length;i++)
+			this.color[i]= Color.BLACK;
+		
+		
+		
+
+	}
+	
+	
+	public static void main(String[] args) {
+		Window window = new Window();
+		while(!window.start)
+		{System.out.println("Waiting.............");}
+		System.out.println("...................\n\nSTARTED\n\n...................");
+		window.draw();
+		System.out.println("...................\n\nFINISHED\n\n...................");
+	}
+	
+	
+	void draw() {
+		int length=color.length;
+		while(Run) {
+			if(stop)
+				continue;
+			
+			for(int i=0;i<length;i++)
+				color[i]= Color.BLACK;
+			
+			if(i>=values.length-1) {
+				Run=false;
+			}
+			if(j>=values.length-i-1) {
+				i++;
+				j=0;
+				if(length>=0)
+					color[length-1]=Color.BLUE;
+				length--;
+			}
+
+			color[j]=Color.red;
+			color[j+1]=Color.green;
+			
+			repaint();
+			try {TimeUnit.MILLISECONDS.sleep(70);} catch (Exception e) {}
+
+			if(values[j]>values[j+1]) {
+				swap(values,j,j+1); 
+
+				color[j+1]=Color.red;
+				color[j]=Color.green;
+			}
+
+			System.out.println("Running.........");
+			repaint();
+			try {TimeUnit.MILLISECONDS.sleep(80);} catch (Exception e) {}
+			j++;
+			
+		}
+		
+	}
+	
+
+	public void paint(Graphics  g){
+		this.createBufferStrategy(2);
+		BufferStrategy bs=this.getBufferStrategy();
+		
+		Graphics g1=bs.getDrawGraphics();
+
+		
+		g1.setColor(Color.WHITE);
+		g1.fillRect(1, 1, getWidth(), getHeight());
+		
+		g1.setColor(Color.BLUE);
+		g1.setFont(new Font("Segoe Script", Font.BOLD,32));
+		g1.drawString("Bubble  Sort", getWidth()/3, 50);
+		
+		
+		for(int i=0;i<values.length;i++) {
+
+			
+			g1.setColor(color[i]);
+			g1.fillRect(i*size, getHeight()- values[i]	, size,values[i]);
+			g1.setColor(Color.WHITE);
+			g1.drawRect(i*size,getHeight()- values[i]	, size, values[i]);
+		
+		}
+		
+		bs.show();
+		
+		
+		
+	}
+	
+	
+	public void swap(int[] arr,int a,int b) {
+		int temp=arr[a];
+		arr[a]=arr[b];
+		arr[b]=temp;
+	}
+	
+	
+	
+
+	public void keyPressed(KeyEvent e) {
+		start=true;
+		if(stop)
+			stop=false;
+		else
+			stop=true;
+		if(stop)
+			System.out.println("...............\n\nPaused\n\n.............");
+		else
+			System.out.println("...............\n\nResumed\n\n............");
+	}
+	
+	
+	
+	
+	
+
+	public void keyTyped(KeyEvent e) {
+
+	}
+
+	
+
+	public void keyReleased(KeyEvent e) {
+
+		
+	}
+
+}
